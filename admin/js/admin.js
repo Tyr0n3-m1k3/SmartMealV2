@@ -36,7 +36,7 @@ const userForm = document.getElementById('user-form');
 let revenueChart, ordersChart;
 
 // API Base URL
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5000';
 
 // Auth Token
 let authToken = localStorage.getItem('smartmeal_admin_token');
