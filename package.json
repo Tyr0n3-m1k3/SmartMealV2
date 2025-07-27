@@ -2,17 +2,15 @@
   "name": "smartmeal-monorepo",
   "private": true,
   "workspaces": ["client", "admin", "server"],
+{
   "scripts": {
-    "start:client": "cd client && npm start",
-    "start:admin": "cd admin && npm start",
     "start:server": "cd server && npm start",
-    "dev": "concurrently \"npm:start:server\" \"npm:start:client\" \"npm:start:admin\"",
-    "build": "cd client && npm run build && cd ../admin && npm run build",
-    "prepare": "husky install"
+    "start:client": "cd client && live-server --port=3000",
+    "start:admin": "cd admin && live-server --port=3001",
+    "dev": "concurrently \"npm:start:server\" \"npm:start:client\" \"npm:start:admin\""
   },
   "devDependencies": {
     "concurrently": "^8.2.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.3"
+    "live-server": "^1.2.2"
   }
 }
