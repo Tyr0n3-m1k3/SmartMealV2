@@ -2,7 +2,6 @@
   "name": "smartmeal-monorepo",
   "private": true,
   "workspaces": ["client", "admin", "server"],
-{
   "scripts": {
     "start:server": "cd server && npm start",
     "start:client": "cd client && live-server --port=3000",
