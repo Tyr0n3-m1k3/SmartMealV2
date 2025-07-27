@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMeal - Food Delivery</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">SmartMeal</a>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for restaurants or dishes">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-links">
+                <a href="#" id="login-btn">Log In</a>
+                <a href="#" id="signup-btn">Sign Up</a>
+                <a href="#" class="cart-btn"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login to SmartMeal</h2>
+            <form id="login-form">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create an Account</h2>
+            <form id="signup-form">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <input type="tel" placeholder="Phone Number">
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your favorite meals, delivered fast</h1>
+            <p>Order from your favorite restaurants with just a few taps</p>
+            <button class="order-btn">Order Now</button>
+        </div>
+    </section>
+
+    <!-- Restaurant Categories -->
+    <section class="categories">
+        <h2>Food Categories</h2>
+        <div class="category-list">
+            <div class="category-item">
+                <img src="images/burger.jpg" alt="Burgers">
+                <h3>Burgers</h3>
+            </div>
+            <div class="category-item">
+                <img src="images/pizza.jpg" alt="Pizza">
+                <h3>Pizza</h3>
+            </div>
+            <div class="category-item">
+                <img src="images/sushi.jpg" alt="Sushi">
+                <h3>Sushi</h3>
+            </div>
+            <div class="category-item">
+                <img src="images/salad.jpg" alt="Salads">
+                <h3>Salads</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Restaurants -->
+    <section class="restaurants">
+        <h2>Popular Restaurants Near You</h2>
+        <div class="restaurant-list" id="restaurant-list">
+            <!-- Dynamically loaded from JS -->
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be added here -->
+        </div>
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">$0.00</span>
+            </div>
+            <div class="cart-total">
+                <span>Delivery Fee:</span>
+                <span id="delivery-fee">$2.99</span>
+            </div>
+            <div class="cart-total grand-total">
+                <span>Total:</span>
+                <span id="cart-total">$2.99</span>
+            </div>
+            <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content checkout-content">
+            <span class="close">&times;</span>
+            <h2>Checkout</h2>
+            <div class="checkout-steps">
+                <div class="step active" data-step="1">Delivery</div>
+                <div class="step" data-step="2">Payment</div>
+                <div class="step" data-step="3">Confirmation</div>
+            </div>
+            
+            <div class="checkout-form" id="delivery-step">
+                <h3>Delivery Information</h3>
+                <input type="text" placeholder="Full Name" required>
+                <input type="text" placeholder="Address" required>
+                <input type="text" placeholder="Apartment, suite, etc. (optional)">
+                <input type="tel" placeholder="Phone Number" required>
+                <textarea placeholder="Delivery Instructions (optional)"></textarea>
+                <button class="next-step" data-next="2">Continue to Payment</button>
+            </div>
+            
+            <div class="checkout-form hidden" id="payment-step">
+                <h3>Payment Method</h3>
+                <div class="payment-methods">
+                    <div class="payment-method active" data-method="credit">
+                        <i class="far fa-credit-card"></i>
+                        <span>Credit/Debit Card</span>
+                    </div>
+                    <div class="payment-method" data-method="paypal">
+                        <i class="fab fa-paypal"></i>
+                        <span>PayPal</span>
+                    </div>
+                    <div class="payment-method" data-method="mpesa">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>M-Pesa</span>
+                    </div>
+                </div>
+                
+                <div class="payment-details" id="credit-card-details">
+                    <input type="text" placeholder="Card Number" required>
+                    <input type="text" placeholder="Name on Card" required>
+                    <div class="card-info">
+                        <input type="text" placeholder="MM/YY" required>
+                        <input type="text" placeholder="CVV" required>
+                    </div>
+                </div>
+                
+                <div class="payment-details hidden" id="paypal-details">
+                    <p>You will be redirected to PayPal to complete your payment</p>
+                </div>
+                
+                <div class="payment-details hidden" id="mpesa-details">
+                    <p>Enter your M-Pesa phone number to receive a payment request</p>
+                    <input type="tel" placeholder="M-Pesa Phone Number" required>
+                </div>
+                
+                <button class="next-step" data-next="3">Complete Order</button>
+            </div>
+            
+            <div class="checkout-form hidden" id="confirmation-step">
+                <div class="order-confirmation">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Order Confirmed!</h3>
+                    <p>Your order has been placed successfully.</p>
+                    <p>Order ID: <span id="order-id">SM12345</span></p>
+                    <p>Estimated delivery time: <span id="delivery-time">30-45 minutes</span></p>
+                    <button class="back-home">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>SmartMeal</h3>
+                <p>Delivering your favorite meals since 2023</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 SmartMeal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
