@@ -596,3 +596,31 @@ tr:hover {
     .modal-content.wide {
         width: 95%;
     }
+}
+
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    .tables-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .top-nav {
+        padding: 0 10px;
+    }
+
+    .search-bar input {
+        width: 150px;
+    }
+}
