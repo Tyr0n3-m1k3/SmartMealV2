@@ -1,5 +1,4 @@
-
-Here's the admin.js to change;// DOM Elements
+// DOM Elements
 const sidebarMenuItems = document.querySelectorAll('.sidebar-menu li');
 const sections = document.querySelectorAll('.section');
 const logoutBtn = document.getElementById('logout');
@@ -531,4 +530,4 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDashboard);
 } else {
     initDashboard();
-} (CHANGE IT ACCORDINGLY AND PROVIDE THE FULL FILE)
+}
