@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
 
 const app = express();
 
@@ -15,33 +14,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // =============================================
-// PATH CONFIGURATION (UPDATED FOR YOUR STRUCTURE)
+// STATIC FILE SERVING (SIMPLIFIED)
 // =============================================
-const projectRoot = path.resolve(__dirname, '..'); // Go up one level from /server
-const adminDir = path.join(projectRoot, 'admin'); // Points to /SmartMealV2/admin
+const adminDir = path.join(__dirname, '../admin'); // Points to /SmartMealV2/admin
 
-console.log('Project root:', projectRoot);
-console.log('Admin directory:', adminDir);
-console.log('Login.html exists:', fs.existsSync(path.join(adminDir, 'login.html')));
-
-// =============================================
-// STATIC FILE SERVING
-// =============================================
+// Serve all admin files (including login.html if it exists)
 app.use('/admin', express.static(adminDir));
 
-// Explicit admin routes
-app.get('/admin/login.html', (req, res) => {
-  const loginPath = path.join(adminDir, 'login.html');
-  if (!fs.existsSync(loginPath)) {
-    console.error('ERROR: login.html not found at:', loginPath);
-    return res.status(404).send('Login page not found');
-  }
-  res.sendFile(loginPath);
-});
-
+// Default admin route - serves index.html
 app.get('/admin', (req, res) => {
-  const indexPath = path.join(adminDir, 'index.html');
-  res.sendFile(indexPath);
+  res.sendFile(path.join(adminDir, 'index.html'));
 });
 
 // =============================================
@@ -50,12 +32,14 @@ app.get('/admin', (req, res) => {
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartmeal', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // =============================================
-// ROUTES (UPDATED FOR YOUR STRUCTURE)
+// ROUTES
 // =============================================
-// Since your routes are in /server/routes
+// Import routes from /server/routes
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurants');
 const orderRoutes = require('./routes/orders');
@@ -78,7 +62,11 @@ app.use((req, res) => {
 // =============================================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Admin login: http://localhost:${PORT}/admin/login.html`);
-  console.log(`Admin directory confirmed at: ${adminDir}`);
+  console.log(`
+  ==================================
+  🚀 Server running on port ${PORT}
+  ==================================
+  Admin Dashboard:   http://localhost:${PORT}/admin
+  API Health Check:  http://localhost:${PORT}/api/health
+  `);
 });
