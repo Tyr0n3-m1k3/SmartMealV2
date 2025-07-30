@@ -45,7 +45,7 @@ let authToken = localStorage.getItem('smartmeal_admin_token');
 async function initDashboard() {
     // Check authentication
     if (!authToken) {
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/index.html';
         return;
     }
 
