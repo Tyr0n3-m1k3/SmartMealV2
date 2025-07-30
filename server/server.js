@@ -7,25 +7,29 @@ const fs = require('fs');
 
 const app = express();
 
-// Middleware
+// =============================================
+// MIDDLEWARE
+// =============================================
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Path configuration
-const projectRoot = path.resolve(__dirname);
-const adminDir = path.join(projectRoot, 'admin');
+// =============================================
+// PATH CONFIGURATION (UPDATED FOR YOUR STRUCTURE)
+// =============================================
+const projectRoot = path.resolve(__dirname, '..'); // Go up one level from /server
+const adminDir = path.join(projectRoot, 'admin'); // Points to /SmartMealV2/admin
 
-// Verify admin directory exists
-if (!fs.existsSync(adminDir)) {
-  console.error('ERROR: Admin directory not found at:', adminDir);
-  process.exit(1);
-}
+console.log('Project root:', projectRoot);
+console.log('Admin directory:', adminDir);
+console.log('Login.html exists:', fs.existsSync(path.join(adminDir, 'login.html')));
 
-// Static file serving
+// =============================================
+// STATIC FILE SERVING
+// =============================================
 app.use('/admin', express.static(adminDir));
 
-// Admin routes
+// Explicit admin routes
 app.get('/admin/login.html', (req, res) => {
   const loginPath = path.join(adminDir, 'login.html');
   if (!fs.existsSync(loginPath)) {
@@ -40,28 +44,41 @@ app.get('/admin', (req, res) => {
   res.sendFile(indexPath);
 });
 
-// Database connection
+// =============================================
+// DATABASE CONNECTION
+// =============================================
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartmeal', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
 
-// Individual route imports (fixes the routes error)
+// =============================================
+// ROUTES (UPDATED FOR YOUR STRUCTURE)
+// =============================================
+// Since your routes are in /server/routes
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurants');
 const orderRoutes = require('./routes/orders');
+const adminRoutes = require('./routes/admin');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 
-// Error handling
+// =============================================
+// ERROR HANDLING
+// =============================================
 app.use((req, res) => {
   res.status(404).send('Page not found');
 });
 
+// =============================================
+// START SERVER
+// =============================================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Admin login: http://localhost:${PORT}/admin/login.html`);
+  console.log(`Admin directory confirmed at: ${adminDir}`);
 });
