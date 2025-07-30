@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -16,13 +17,13 @@ app.use(express.urlencoded({ extended: true }));
 // =============================================
 // STATIC FILE SERVING
 // =============================================
-// Serve everything in /public folder
-const publicDir = path.join(__dirname, 'public');
-app.use(express.static(publicDir));
+// Serve static files from the /public folder inside /server
+const staticPath = path.join(__dirname, 'public');
+app.use(express.static(staticPath));
 
-// Optional: fallback route for /admin to serve admin index
+// Serve admin index directly for /admin route
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(publicDir, 'admin', 'index.html'));
+  res.sendFile(path.join(staticPath, 'admin', 'index.html'));
 });
 
 // =============================================
@@ -30,10 +31,10 @@ app.get('/admin', (req, res) => {
 // =============================================
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartmeal', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // =============================================
 // ROUTES
@@ -61,10 +62,7 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`
-  ==================================
-  🚀 Server running on port ${PORT}
-  ==================================
-  Admin Dashboard:   http://localhost:${PORT}/admin
-  API Health Check:  http://localhost:${PORT}/api/health
+  🚀 Server running on http://localhost:${PORT}
+  🔐 Admin Dashboard: http://localhost:${PORT}/admin/login.html
   `);
 });
