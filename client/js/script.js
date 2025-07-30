@@ -32,10 +32,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signup-form');
 
     // Sample restaurant data (would normally come from API)
-    const restaurants = [
-        // ... (keep your existing restaurant data)
+   const restaurants = [
+        {
+            id: 1,
+            name: "Burger Palace",
+            cuisine: "American, Burgers",
+            rating: 4.5,
+            reviews: 124,
+            deliveryTime: "20-30 min",
+            price: "$$",
+            image: "images/burger-restaurant.jpg",
+            menu: [
+                { id: 101, name: "Classic Burger", price: 8.99, description: "Beef patty with lettuce, tomato, and special sauce" },
+                { id: 102, name: "Cheeseburger", price: 9.99, description: "Classic burger with American cheese" },
+                { id: 103, name: "Bacon Burger", price: 10.99, description: "Classic burger with crispy bacon" }
+            ]
+        },
+        {
+            id: 2,
+            name: "Pizza Heaven",
+            cuisine: "Italian, Pizza",
+            rating: 4.7,
+            reviews: 215,
+            deliveryTime: "25-35 min",
+            price: "$$",
+            image: "images/pizza-restaurant.jpg",
+            menu: [
+                { id: 201, name: "Margherita Pizza", price: 12.99, description: "Classic pizza with tomato sauce and mozzarella" },
+                { id: 202, name: "Pepperoni Pizza", price: 14.99, description: "Margherita pizza with pepperoni" },
+                { id: 203, name: "Vegetarian Pizza", price: 13.99, description: "Pizza with assorted vegetables" }
+            ]
+        },
+        {
+            id: 3,
+            name: "Sushi World",
+            cuisine: "Japanese, Sushi",
+            rating: 4.8,
+            reviews: 178,
+            deliveryTime: "30-40 min",
+            price: "$$$",
+            image: "images/sushi-restaurant.jpg",
+            menu: [
+                { id: 301, name: "California Roll", price: 7.99, description: "Crab, avocado, and cucumber" },
+                { id: 302, name: "Salmon Nigiri", price: 9.99, description: "Fresh salmon over rice" },
+                { id: 303, name: "Dragon Roll", price: 14.99, description: "Eel, crab, and avocado topped with avocado" }
+            ]
+        },
+        {
+            id: 4,
+            name: "Green Leaf",
+            cuisine: "Healthy, Salads",
+            rating: 4.3,
+            reviews: 92,
+            deliveryTime: "15-25 min",
+            price: "$$",
+            image: "images/salad-restaurant.jpg",
+            menu: [
+                { id: 401, name: "Caesar Salad", price: 8.99, description: "Romaine lettuce, croutons, parmesan, and Caesar dressing" },
+                { id: 402, name: "Greek Salad", price: 9.99, description: "Cucumbers, tomatoes, olives, and feta cheese" },
+                { id: 403, name: "Avocado Salad", price: 10.99, description: "Mixed greens with avocado, nuts, and vinaigrette" }
+            ]
+        }
     ];
-
+    
     // Cart data
     let cart = [];
     let currentStep = 1;
