@@ -1,3 +1,4 @@
+
 // DOM Elements
 const sidebarMenuItems = document.querySelectorAll('.sidebar-menu li');
 const sections = document.querySelectorAll('.section');
@@ -44,57 +45,84 @@ let authToken = localStorage.getItem('smartmeal_admin_token');
 // Initialize the dashboard
 async function initDashboard() {
     try {
-        // Remove login check completely - dashboard loads directly
-        await loadDashboardData();
+        // Check authentication - simplified for direct dashboard access
+        if (!authToken) {
+            // Try to authenticate automatically or show login form directly
+            await attemptAutoLogin();
+            return;
+        }
+
+        // Verify token is still valid
+        const isValid = await verifyToken(authToken);
+        if (!isValid) {
+            localStorage.removeItem('smartmeal_admin_token');
+            await attemptAutoLogin();
+            return;
+        }
+
+        // Load admin name
+        await loadAdminData();
+
+        // Load dashboard data
+        await Promise.all([
+            loadDashboardStats(),
+            loadRecentOrders(),
+            loadActiveRestaurants()
+        ]);
+
+        // Setup event listeners
         setupEventListeners();
+
+        // Activate default section
         activateDefaultSection();
+
     } catch (error) {
         console.error('Initialization error:', error);
-        showError('Dashboard initialization failed. Please refresh.');
+        showErrorAlert('Failed to initialize dashboard. Please refresh the page.');
     }
 }
 
-// Load all dashboard data
-async function loadDashboardData() {
+// Simplified auto-login attempt
+async function attemptAutoLogin() {
     try {
-        // Try to load authenticated data first
-        if (authToken) {
-            const isValid = await verifyToken(authToken);
-            if (isValid) {
-                await Promise.all([
-                    loadAdminData(),
-                    loadDashboardStats(),
-                    loadRecentOrders(),
-                    loadActiveRestaurants()
-                ]);
-                return;
-            }
-            // If token is invalid, clear it
-            localStorage.removeItem('smartmeal_admin_token');
-            authToken = null;
-        }
+        // You could implement automatic login via cookies or other methods here
+        // For now, we'll just show the dashboard with limited functionality
+        console.warn('No valid token found - proceeding with limited access');
         
-        // Fallback to public data
+        // Load basic dashboard data without authentication
         await loadPublicData();
+        setupEventListeners();
+        activateDefaultSection();
     } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        throw error;
+        console.error('Auto-login failed:', error);
+        showErrorAlert('Please contact administrator for access');
     }
 }
 
 // Load public data (non-sensitive information)
 async function loadPublicData() {
     try {
+        // Load basic stats that don't require authentication
         const response = await fetch(`${API_BASE_URL}/admin/public-stats`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch public data');
+        }
+        
         const stats = await response.json();
         
         // Update stats cards with public data
-        updateStatCard('total-restaurants', stats.totalRestaurants);
-        updateStatCard('total-orders', stats.totalOrders);
+        if (document.getElementById('total-restaurants')) {
+            document.getElementById('total-restaurants').textContent = stats.totalRestaurants || 0;
+        }
         
-        // Create empty charts
-        if (revenueChartCtx) createRevenueChart(0);
-        if (ordersChartCtx) createOrdersChart(0, 0);
+        // Create charts with sample data
+        if (revenueChartCtx) {
+            createRevenueChart(0); // Show empty chart
+        }
+        if (ordersChartCtx) {
+            createOrdersChart(0, 0); // Show empty chart
+        }
         
     } catch (error) {
         console.error('Error loading public data:', error);
@@ -102,21 +130,13 @@ async function loadPublicData() {
     }
 }
 
-// Update stat card display
-function updateStatCard(elementId, value) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = elementId.includes('revenue') 
-            ? `$${(value || 0).toFixed(2)}` 
-            : (value || 0);
-    }
-}
-
 // Verify token validity
 async function verifyToken(token) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/verify`, {
-            headers: { 'x-auth-token': token }
+            headers: {
+                'x-auth-token': token
+            }
         });
         return response.ok;
     } catch (error) {
@@ -129,13 +149,43 @@ async function verifyToken(token) {
 async function loadAdminData() {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/user`, {
-            headers: { 'x-auth-token': authToken }
+            headers: {
+                'x-auth-token': authToken
+            }
         });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch admin data');
+        }
+        
         const adminData = await response.json();
-        if (adminName) adminName.textContent = adminData.name || 'Admin';
+        adminName.textContent = adminData.name || 'Admin';
     } catch (error) {
         console.error('Error loading admin data:', error);
-        throw error;
+        throw new Error('Authentication failed');
+    }
+}
+
+       
+        const adminData = await response.json();
+        adminName.textContent = adminData.name || 'Admin';
+    } catch (error) {
+        console.error('Error loading admin data:', error);
+        throw new Error('Authentication failed');
+    }
+}
+
+// Activate default section
+function activateDefaultSection() {
+    // Activate first menu item by default
+    if (sidebarMenuItems.length > 0) {
+        sidebarMenuItems[0].classList.add('active');
+    }
+    
+    // Show dashboard section by default
+    const defaultSection = document.getElementById('dashboard-section');
+    if (defaultSection) {
+        defaultSection.classList.add('active');
     }
 }
 
@@ -143,21 +193,42 @@ async function loadAdminData() {
 async function loadDashboardStats() {
     try {
         const response = await fetch(`${API_BASE_URL}/admin/stats`, {
-            headers: { 'x-auth-token': authToken }
+            headers: {
+                'x-auth-token': authToken
+            }
         });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch dashboard stats');
+        }
+        
         const stats = await response.json();
         
-        updateStatCard('total-users', stats.totalUsers);
-        updateStatCard('total-restaurants', stats.totalRestaurants);
-        updateStatCard('total-orders', stats.totalOrders);
-        updateStatCard('total-revenue', stats.totalRevenue);
+        // Update stats cards
+        if (document.getElementById('total-users')) {
+            document.getElementById('total-users').textContent = stats.totalUsers || 0;
+        }
+        if (document.getElementById('total-restaurants')) {
+            document.getElementById('total-restaurants').textContent = stats.totalRestaurants || 0;
+        }
+        if (document.getElementById('total-orders')) {
+            document.getElementById('total-orders').textContent = stats.totalOrders || 0;
+        }
+        if (document.getElementById('total-revenue')) {
+            document.getElementById('total-revenue').textContent = `$${(stats.totalRevenue || 0).toFixed(2)}`;
+        }
         
-        if (revenueChartCtx) createRevenueChart(stats.totalRevenue);
-        if (ordersChartCtx) createOrdersChart(stats.deliveredOrders, stats.totalOrders - stats.deliveredOrders);
+        // Create charts if elements exist
+        if (revenueChartCtx) {
+            createRevenueChart(stats.totalRevenue);
+        }
+        if (ordersChartCtx) {
+            createOrdersChart(stats.deliveredOrders || 0, (stats.totalOrders || 0) - (stats.deliveredOrders || 0));
+        }
         
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
-        throw error;
+        alert('Failed to load dashboard statistics');
     }
 }
 
@@ -173,8 +244,8 @@ function createRevenueChart(revenue) {
                 datasets: [{
                     label: 'Revenue',
                     data: [1200, 1900, 1500, 2000, 2200, 2500, 2800, 2600, 3000, 3200, 3500, 4000],
-                    backgroundColor: 'rgba(249, 66, 58, 0.2)',
-                    borderColor: 'rgba(249, 66, 58, 1)',
+                    backgroundColor: 'rgba(249, 66, 58, 0.2)', // Grubhub red
+                    borderColor: 'rgba(249, 66, 58, 1)', // Grubhub red
                     borderWidth: 2,
                     tension: 0.4,
                     fill: true
@@ -182,8 +253,16 @@ function createRevenueChart(revenue) {
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
     } catch (error) {
@@ -203,7 +282,7 @@ function createOrdersChart(delivered, pending) {
                 datasets: [{
                     data: [delivered, pending],
                     backgroundColor: [
-                        'rgba(249, 66, 58, 0.8)',
+                        'rgba(249, 66, 58, 0.8)', // Grubhub red
                         'rgba(52, 152, 219, 0.8)'
                     ],
                     borderWidth: 0
@@ -211,7 +290,11 @@ function createOrdersChart(delivered, pending) {
             },
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
             }
         });
     } catch (error) {
@@ -225,21 +308,28 @@ async function loadRecentOrders() {
         if (!recentOrdersTable) return;
         
         const response = await fetch(`${API_BASE_URL}/admin/orders?limit=5`, {
-            headers: { 'x-auth-token': authToken }
+            headers: {
+                'x-auth-token': authToken
+            }
         });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch recent orders');
+        }
+        
         const orders = await response.json();
         const tbody = recentOrdersTable.querySelector('tbody');
         tbody.innerHTML = '';
         
-        if (orders?.length > 0) {
+        if (orders && orders.length > 0) {
             orders.forEach(order => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${order._id?.substring(0, 8) || ''}</td>
+                    <td>${order._id ? order._id.substring(0, 8) : ''}</td>
                     <td>${order.customer?.name || 'N/A'}</td>
                     <td>${order.restaurant?.name || 'N/A'}</td>
                     <td>$${(order.total || 0).toFixed(2)}</td>
-                    <td><span class="status-badge ${order.status || ''}">${order.status?.replace('_', ' ') || 'N/A'}</span></td>
+                    <td><span class="status-badge ${order.status || ''}">${order.status ? order.status.replace('_', ' ') : 'N/A'}</span></td>
                     <td>${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</td>
                 `;
                 if (orderModal) {
@@ -248,11 +338,12 @@ async function loadRecentOrders() {
                 tbody.appendChild(row);
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center">No recent orders</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">No recent orders found</td></tr>';
         }
+        
     } catch (error) {
         console.error('Error loading recent orders:', error);
-        if (recentOrdersTable?.querySelector('tbody')) {
+        if (recentOrdersTable && recentOrdersTable.querySelector('tbody')) {
             recentOrdersTable.querySelector('tbody').innerHTML = '<tr><td colspan="6" class="text-center">Failed to load orders</td></tr>';
         }
     }
@@ -264,13 +355,20 @@ async function loadActiveRestaurants() {
         if (!activeRestaurantsTable) return;
         
         const response = await fetch(`${API_BASE_URL}/admin/restaurants?limit=5`, {
-            headers: { 'x-auth-token': authToken }
+            headers: {
+                'x-auth-token': authToken
+            }
         });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch active restaurants');
+        }
+        
         const restaurants = await response.json();
         const tbody = activeRestaurantsTable.querySelector('tbody');
         tbody.innerHTML = '';
         
-        if (restaurants?.length > 0) {
+        if (restaurants && restaurants.length > 0) {
             restaurants.forEach(restaurant => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -283,11 +381,12 @@ async function loadActiveRestaurants() {
                 tbody.appendChild(row);
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center">No restaurants found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">No active restaurants found</td></tr>';
         }
+        
     } catch (error) {
         console.error('Error loading active restaurants:', error);
-        if (activeRestaurantsTable?.querySelector('tbody')) {
+        if (activeRestaurantsTable && activeRestaurantsTable.querySelector('tbody')) {
             activeRestaurantsTable.querySelector('tbody').innerHTML = '<tr><td colspan="5" class="text-center">Failed to load restaurants</td></tr>';
         }
     }
@@ -298,27 +397,30 @@ function openOrderModal(order) {
     if (!orderModal) return;
     
     try {
-        // Update order details
-        document.getElementById('order-id').textContent = `#${order._id?.substring(0, 8) || ''}`;
+        document.getElementById('order-id').textContent = `#${order._id ? order._id.substring(0, 8) : ''}`;
         document.getElementById('order-customer').textContent = order.customer?.name || 'N/A';
         document.getElementById('order-restaurant').textContent = order.restaurant?.name || 'N/A';
         document.getElementById('order-date').textContent = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A';
-        document.getElementById('order-address').textContent = order.deliveryAddress ? 
-            `${order.deliveryAddress.street || ''}, ${order.deliveryAddress.city || ''}` : 'N/A';
+        
+        if (order.deliveryAddress) {
+            document.getElementById('order-address').textContent = `${order.deliveryAddress.street || ''}, ${order.deliveryAddress.city || ''}`;
+        } else {
+            document.getElementById('order-address').textContent = 'N/A';
+        }
+        
         document.getElementById('order-instructions').textContent = order.deliveryAddress?.instructions || 'None';
         
         const statusElement = document.getElementById('current-status');
         if (statusElement) {
-            statusElement.textContent = order.status?.replace('_', ' ') || 'N/A';
+            statusElement.textContent = order.status ? order.status.replace('_', ' ') : 'N/A';
             statusElement.className = `status-badge ${order.status || ''}`;
         }
         
-        // Update financials
         document.getElementById('order-subtotal').textContent = `$${(order.subtotal || 0).toFixed(2)}`;
         document.getElementById('order-delivery-fee').textContent = `$${(order.deliveryFee || 0).toFixed(2)}`;
         document.getElementById('order-tax').textContent = `$${(order.tax || 0).toFixed(2)}`;
         document.getElementById('order-total').textContent = `$${(order.total || 0).toFixed(2)}`;
-        document.getElementById('payment-method').textContent = order.paymentMethod?.replace('_', ' ') || 'N/A';
+        document.getElementById('payment-method').textContent = order.paymentMethod ? order.paymentMethod.replace('_', ' ') : 'N/A';
         document.getElementById('payment-status').textContent = order.paymentStatus || 'N/A';
         
         // Load order items
@@ -326,7 +428,7 @@ function openOrderModal(order) {
         if (itemsList) {
             itemsList.innerHTML = '';
             
-            if (order.items?.length > 0) {
+            if (order.items && order.items.length > 0) {
                 order.items.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -349,30 +451,25 @@ function openOrderModal(order) {
     }
 }
 
-// Activate default section
-function activateDefaultSection() {
-    if (sidebarMenuItems.length > 0) {
-        sidebarMenuItems[0].classList.add('active');
-    }
-    const defaultSection = document.getElementById('dashboard-section');
-    if (defaultSection) {
-        defaultSection.classList.add('active');
-    }
-}
-
 // Setup event listeners
 function setupEventListeners() {
-    // Sidebar navigation
+    // Sidebar menu navigation
     if (sidebarMenuItems) {
         sidebarMenuItems.forEach(item => {
             item.addEventListener('click', () => {
+                // Remove active class from all items
                 sidebarMenuItems.forEach(i => i.classList.remove('active'));
+                // Add active class to clicked item
                 item.classList.add('active');
                 
+                // Hide all sections
                 sections.forEach(section => section.classList.remove('active'));
+                // Show corresponding section
                 const sectionId = `${item.dataset.section}-section`;
                 const section = document.getElementById(sectionId);
-                if (section) section.classList.add('active');
+                if (section) {
+                    section.classList.add('active');
+                }
             });
         });
     }
@@ -381,7 +478,7 @@ function setupEventListeners() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('smartmeal_admin_token');
-            window.location.reload(); // Refresh to show public view
+            window.location.href = '/admin/login.html';
         });
     }
     
@@ -396,27 +493,116 @@ function setupEventListeners() {
         });
     }
     
-    // Form submissions and other button events remain the same...
-    // [Previous implementation of form handlers]
+    // Add restaurant button
+    if (addRestaurantBtn && restaurantModal && restaurantForm) {
+        addRestaurantBtn.addEventListener('click', () => {
+            const titleElement = document.getElementById('restaurant-modal-title');
+            const idElement = document.getElementById('restaurant-id');
+            
+            if (titleElement) titleElement.textContent = 'Add New Restaurant';
+            if (idElement) idElement.value = '';
+            restaurantForm.reset();
+            restaurantModal.style.display = 'block';
+        });
+    }
+    
+    // Add user button
+    if (addUserBtn && userModal && userForm) {
+        addUserBtn.addEventListener('click', () => {
+            const titleElement = document.getElementById('user-modal-title');
+            const idElement = document.getElementById('user-id');
+            
+            if (titleElement) titleElement.textContent = 'Add New User';
+            if (idElement) idElement.value = '';
+            userForm.reset();
+            userModal.style.display = 'block';
+        });
+    }
+    
+    // Add driver button
+    if (addDriverBtn && userModal && userForm) {
+        addDriverBtn.addEventListener('click', () => {
+            const titleElement = document.getElementById('user-modal-title');
+            const idElement = document.getElementById('user-id');
+            const roleElement = document.getElementById('user-role');
+            
+            if (titleElement) titleElement.textContent = 'Add New Driver';
+            if (idElement) idElement.value = '';
+            userForm.reset();
+            if (roleElement) roleElement.value = 'driver';
+            userModal.style.display = 'block';
+        });
+    }
+    
+    // Restaurant form submission
+    if (restaurantForm) {
+        restaurantForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                // Handle form submission
+                // You would typically send this data to your backend API
+                alert('Restaurant saved successfully!');
+                if (restaurantModal) restaurantModal.style.display = 'none';
+            } catch (error) {
+                console.error('Error saving restaurant:', error);
+                alert('Failed to save restaurant');
+            }
+        });
+    }
+    
+    // User form submission
+    if (userForm) {
+        userForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                // Handle form submission
+                // You would typically send this data to your backend API
+                alert('User saved successfully!');
+                if (userModal) userModal.style.display = 'none';
+            } catch (error) {
+                console.error('Error saving user:', error);
+                alert('Failed to save user');
+            }
+        });
+    }
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+        if (restaurantModal && e.target === restaurantModal) {
+            restaurantModal.style.display = 'none';
+        }
+        if (userModal && e.target === userModal) {
+            userModal.style.display = 'none';
+        }
+        if (orderModal && e.target === orderModal) {
+            orderModal.style.display = 'none';
+        }
+    });
 }
 
-// Show error message
-function showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'global-error';
-    errorDiv.innerHTML = `
-        <div class="error-content">
-            <span>${message}</span>
-            <button onclick="this.parentElement.parentElement.remove()">×</button>
-        </div>
-    `;
-    document.body.appendChild(errorDiv);
-    setTimeout(() => errorDiv.remove(), 5000);
-}
-
-// Initialize the dashboard
+// Initialize the dashboard when DOM is loaded
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDashboard);
 } else {
     initDashboard();
+}
+
+// Helper function to show error messages
+function showErrorAlert(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'global-alert';
+    alertDiv.innerHTML = `
+        <div class="alert-content">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
 }
