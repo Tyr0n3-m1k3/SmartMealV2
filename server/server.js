@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); // Added for file paths
+const path = require('path');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -15,24 +15,40 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // =============================================
-// STATIC FILE SERVING (CRITICAL FIX)
+// STATIC FILE SERVING (FIXED IMPLEMENTATION)
 // =============================================
-// Serve customer frontend files
-app.use(express.static(path.join(__dirname, '../client')));
+const rootDir = path.dirname(require.main.filename || process.mainModule.filename);
 
-// Serve admin dashboard files
-app.use('/admin', express.static(path.join(__dirname, '../admin'), { 
-  index: false // Disable automatic index.html serving
+// Serve static files from client directory
+const clientPath = path.join(rootDir, 'client');
+app.use(express.static(clientPath));
+
+// Serve admin files with proper path resolution
+const adminPath = path.join(rootDir, 'admin');
+app.use('/admin', express.static(adminPath, {
+  index: false,
+  extensions: ['html']
+}));
+
+// Explicit admin routes with error handling
+app.get('/admin/login.html', (req, res, next) => {
+  const loginPath = path.join(adminPath, 'login.html');
+  res.sendFile(loginPath, (err) => {
+    if (err) {
+      console.error('Failed to send login.html:', err);
+      next(err);
+    }
+  });
 });
 
-// Explicit route for admin login page
-app.get('/admin/login.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/login.html'));
-});
-
-// Fallback for admin dashboard
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/index.html'));
+app.get('/admin', (req, res, next) => {
+  const adminIndexPath = path.join(adminPath, 'index.html');
+  res.sendFile(adminIndexPath, (err) => {
+    if (err) {
+      console.error('Failed to send admin index:', err);
+      next(err);
+    }
+  });
 });
 
 // =============================================
@@ -53,12 +69,21 @@ app.use('/api/restaurants', require('./routes/restaurants'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 // =============================================
 // ERROR HANDLING
 // =============================================
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(clientPath, '404.html'));
+});
+
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+  console.error(err.stack);
+  res.status(500).sendFile(path.join(clientPath, '500.html'));
 });
 
 // =============================================
