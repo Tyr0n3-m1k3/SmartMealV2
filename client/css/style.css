@@ -1,821 +1,1237 @@
-/* Global Styles */
+/* ============================================= */
+/* GLOBAL STYLES */
+/* ============================================= */
+:root {
+  --primary-color: #f9423a; /* Grubhub red */
+  --primary-dark: #e03a32;
+  --secondary-color: #2b2b2b;
+  --light-gray: #f8f8f8;
+  --medium-gray: #ddd;
+  --dark-gray: #666;
+  --white: #ffffff;
+  --black: #333;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 6px 12px rgba(249, 66, 58, 0.2);
+  --transition: all 0.3s ease;
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: #ffffff;
-    color: #333;
-    line-height: 1.6;
+  background-color: var(--white);
+  color: var(--black);
+  line-height: 1.6;
+  position: relative;
+}
+
+body.modal-open {
+  overflow: hidden;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 button {
-    cursor: pointer;
-    border: none;
-    outline: none;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: var(--transition);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* Navbar Styles - Grubhub Red Theme */
+/* ============================================= */
+/* TYPOGRAPHY */
+/* ============================================= */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+
+/* ============================================= */
+/* UTILITY CLASSES */
+/* ============================================= */
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+.error { border-color: #ff4d4f !important; }
+
+/* ============================================= */
+/* NAVBAR STYLES */
+/* ============================================= */
 .navbar {
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid #f0f0f0;
+  background-color: var(--white);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--medium-gray);
 }
 
 .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #f9423a; /* Grubhub red */
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .search-bar {
-    display: flex;
-    flex-grow: 0.5;
-    margin: 0 20px;
+  display: flex;
+  flex-grow: 0.5;
+  margin: 0 20px;
+  max-width: 500px;
 }
 
 .search-bar input {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px 0 0 4px;
-    font-size: 16px;
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.search-bar input:focus {
+  border-color: var(--primary-color);
+  outline: none;
 }
 
 .search-bar button {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 10px 15px;
-    border-radius: 0 4px 4px 0;
-    transition: background-color 0.3s;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 10px 15px;
+  border-radius: 0 4px 4px 0;
+  font-weight: 500;
+  transition: var(--transition);
 }
 
 .search-bar button:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
 }
 
 .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .nav-links a {
-    font-weight: 500;
-    transition: color 0.3s;
+  font-weight: 500;
+  transition: var(--transition);
+  padding: 8px 12px;
+  border-radius: 4px;
 }
 
 .nav-links a:hover {
-    color: #f9423a; /* Grubhub red */
+  color: var(--primary-color);
 }
 
 .cart-btn {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: 500;
-    transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: var(--transition);
 }
 
 .cart-btn:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
-/* Modal Styles */
+/* ============================================= */
+/* MODAL STYLES */
+/* ============================================= */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    overflow: auto;
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-content {
-    background-color: #fff;
-    margin: 5% auto;
-    padding: 30px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 450px;
-    position: relative;
-    animation: modalopen 0.4s;
+  background-color: var(--white);
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  animation: slideDown 0.4s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes modalopen {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .close {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #aaa;
-    cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--dark-gray);
+  cursor: pointer;
+  transition: var(--transition);
 }
 
 .close:hover {
-    color: #333;
+  color: var(--primary-color);
+  transform: rotate(90deg);
 }
 
 .modal h2 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--black);
 }
 
 .modal form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .modal form input {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+  padding: 12px 15px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.modal form input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(249, 66, 58, 0.2);
 }
 
 .modal form button {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 12px;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 600;
-    transition: background-color 0.3s;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  margin-top: 10px;
 }
 
 .modal form button:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
 .modal p {
-    text-align: center;
-    margin-top: 15px;
+  text-align: center;
+  margin-top: 15px;
+  color: var(--dark-gray);
 }
 
 .modal p a {
-    color: #f9423a; /* Grubhub red */
-    font-weight: 500;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: var(--transition);
 }
 
-/* Hero Section */
+.modal p a:hover {
+  text-decoration: underline;
+}
+
+/* Menu Modal Specific Styles */
+.menu-modal-content {
+  max-width: 600px;
+  padding: 20px;
+}
+
+.menu-items {
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 20px 0;
+  padding-right: 10px;
+}
+
+.menu-item {
+  display: flex;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--medium-gray);
+  align-items: center;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.menu-item-info {
+  flex: 1;
+}
+
+.menu-item-info h3 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.menu-item-desc {
+  color: var(--dark-gray);
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.price {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.menu-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--light-gray);
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: var(--transition);
+}
+
+.quantity-btn:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.quantity {
+  min-width: 20px;
+  text-align: center;
+}
+
+.add-btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.add-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.menu-modal-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.view-cart-btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.view-cart-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* ============================================= */
+/* HERO SECTION */
+/* ============================================= */
 .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/hero-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 400px;
-    display: flex;
-    align-items: center;
-    color: white;
-    text-align: center;
-    padding: 0 20px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  color: var(--white);
+  text-align: center;
+  padding: 0 20px;
 }
 
 .hero-content {
-    max-width: 800px;
-    margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero p {
-    font-size: 20px;
-    margin-bottom: 30px;
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .order-btn {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 12px 30px;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: 600;
-    transition: background-color 0.3s;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .order-btn:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Categories Section */
+/* ============================================= */
+/* CATEGORIES SECTION */
+/* ============================================= */
 .categories {
-    padding: 60px 0;
-    background-color: #f8f8f8;
+  padding: 60px 0;
+  background-color: var(--light-gray);
 }
 
 .categories h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 32px;
-    color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: var(--black);
 }
 
 .category-list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .category-item {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-    width: 200px;
-    text-align: center;
+  background-color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
 }
 
 .category-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(249, 66, 58, 0.2);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
 }
 
 .category-item img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.category-item:hover img {
+  transform: scale(1.05);
 }
 
 .category-item h3 {
-    padding: 15px;
-    font-size: 18px;
+  padding: 15px;
+  font-size: 1.1rem;
+  color: var(--black);
+  transition: var(--transition);
 }
 
-/* Restaurants Section */
+.category-item:hover h3 {
+  color: var(--primary-color);
+}
+
+/* ============================================= */
+/* RESTAURANTS SECTION */
+/* ============================================= */
 .restaurants {
-    padding: 40px 0 60px;
-    background-color: #ffffff;
+  padding: 60px 0;
+  background-color: var(--white);
 }
 
 .restaurants h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 32px;
-    color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: var(--black);
 }
 
 .restaurant-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
 }
 
 .restaurant-card {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-    border: 1px solid #f0f0f0;
+  background-color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border: 1px solid var(--medium-gray);
+  cursor: pointer;
 }
 
 .restaurant-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(249, 66, 58, 0.2);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
 }
 
 .restaurant-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.restaurant-card:hover .restaurant-img {
+  opacity: 0.9;
 }
 
 .restaurant-info {
-    padding: 15px;
+  padding: 15px;
 }
 
 .restaurant-name {
-    font-size: 20px;
-    margin-bottom: 5px;
-    color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  color: var(--black);
 }
 
 .restaurant-cuisine {
-    color: #666;
-    margin-bottom: 10px;
+  color: var(--dark-gray);
+  margin-bottom: 10px;
+  font-size: 0.9rem;
 }
 
 .restaurant-rating {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .restaurant-rating .stars {
-    color: #ffc107;
-    margin-right: 5px;
+  color: #ffc107;
+  margin-right: 5px;
 }
 
 .restaurant-rating .reviews {
-    color: #666;
-    font-size: 14px;
+  color: var(--dark-gray);
+  font-size: 0.9rem;
 }
 
 .restaurant-delivery {
-    display: flex;
-    justify-content: space-between;
-    color: #666;
-    font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--dark-gray);
+  font-size: 0.9rem;
 }
 
-.add-to-cart-btn {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 14px;
-    margin-top: 10px;
-    width: 100%;
-    transition: background-color 0.3s;
+.view-menu-btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  width: 100%;
+  transition: var(--transition);
+  display: block;
+  text-align: center;
 }
 
-.add-to-cart-btn:hover {
-    background-color: #e03a32; /* Darker red */
+.view-menu-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
-/* Cart Sidebar */
+/* ============================================= */
+/* CART SIDEBAR */
+/* ============================================= */
 .cart-sidebar {
-    position: fixed;
-    top: 0;
-    right: -400px;
-    width: 400px;
-    height: 100%;
-    background-color: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100%;
+  background-color: var(--white);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
 }
 
 .cart-sidebar.active {
-    right: 0;
+  right: 0;
 }
 
 .cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--medium-gray);
+  background-color: var(--primary-color);
+  color: var(--white);
 }
 
 .cart-header h3 {
-    font-size: 20px;
+  font-size: 1.3rem;
 }
 
 .close-cart {
-    font-size: 24px;
-    background: none;
-    color: white;
+  font-size: 1.5rem;
+  background: none;
+  color: var(--white);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.close-cart:hover {
+  transform: rotate(90deg);
 }
 
 .cart-items {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.empty-cart {
+  text-align: center;
+  color: var(--dark-gray);
+  padding: 40px 0;
+  font-size: 1.1rem;
 }
 
 .cart-item {
-    display: flex;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--medium-gray);
 }
 
 .cart-item-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 15px;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 .cart-item-details {
-    flex-grow: 1;
+  flex: 1;
 }
 
 .cart-item-name {
-    font-weight: 600;
-    margin-bottom: 5px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--black);
+}
+
+.cart-item-restaurant {
+  color: var(--dark-gray);
+  font-size: 0.8rem;
+  margin-bottom: 5px;
 }
 
 .cart-item-price {
-    color: #f9423a; /* Grubhub red */
-    font-weight: 600;
-    margin-bottom: 10px;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .cart-item-controls {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-item-controls .quantity-btn {
+  width: 25px;
+  height: 25px;
+  font-size: 0.8rem;
 }
 
 .cart-item-quantity {
-    margin: 0 10px;
+  min-width: 20px;
+  text-align: center;
 }
 
 .cart-item-remove {
-    color: #f9423a; /* Grubhub red */
-    margin-left: auto;
-    cursor: pointer;
-    font-weight: 600;
+  color: var(--primary-color);
+  margin-left: auto;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+.cart-item-remove:hover {
+  color: var(--primary-dark);
+  transform: scale(1.2);
 }
 
 .cart-summary {
-    padding: 20px;
-    border-top: 1px solid #eee;
+  padding: 20px;
+  border-top: 1px solid var(--medium-gray);
 }
 
 .cart-total {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--black);
 }
 
 .grand-total {
-    font-weight: 600;
-    font-size: 18px;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
-    color: #f9423a; /* Grubhub red */
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--medium-gray);
+  color: var(--primary-color);
 }
 
 .checkout-btn {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 12px;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 15px;
-    transition: background-color 0.3s;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .checkout-btn:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
-/* Checkout Modal */
+/* ============================================= */
+/* CHECKOUT MODAL */
+/* ============================================= */
 .checkout-content {
-    max-width: 600px;
+  max-width: 600px;
+  padding: 30px;
 }
 
 .checkout-steps {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
 }
 
 .checkout-steps::before {
-    content: '';
-    position: absolute;
-    top: 15px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: #eee;
-    z-index: 1;
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--medium-gray);
+  z-index: 1;
 }
 
 .step {
-    position: relative;
-    z-index: 2;
-    background-color: #eee;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    font-weight: 600;
+  position: relative;
+  z-index: 2;
+  background-color: var(--medium-gray);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark-gray);
+  font-weight: 600;
+  transition: var(--transition);
 }
 
 .step.active {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
+  background-color: var(--primary-color);
+  color: var(--white);
+  transform: scale(1.1);
 }
 
 .checkout-form {
-    display: none;
+  display: none;
 }
 
 .checkout-form.active {
-    display: block;
+  display: block;
+  animation: fadeIn 0.5s;
 }
 
 .checkout-form h3 {
-    margin-bottom: 20px;
-    font-size: 20px;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  color: var(--black);
 }
 
 .checkout-form input,
 .checkout-form textarea {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(249, 66, 58, 0.2);
 }
 
 .checkout-form textarea {
-    height: 100px;
-    resize: vertical;
+  height: 100px;
+  resize: vertical;
 }
 
 .next-step {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 12px;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 15px;
-    transition: background-color 0.3s;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .next-step:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
 .payment-methods {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .payment-method {
-    flex: 1;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
+  flex: 1;
+  padding: 15px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.payment-method:hover {
+  border-color: var(--primary-color);
 }
 
 .payment-method.active {
-    border-color: #f9423a; /* Grubhub red */
-    background-color: rgba(249, 66, 58, 0.1);
+  border-color: var(--primary-color);
+  background-color: rgba(249, 66, 58, 0.1);
 }
 
 .payment-method i {
-    font-size: 24px;
-    margin-bottom: 10px;
-    display: block;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  display: block;
+  color: var(--primary-color);
+}
+
+.payment-method span {
+  font-weight: 500;
 }
 
 .payment-details {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: var(--light-gray);
+  animation: fadeIn 0.5s;
 }
 
 .card-info {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .card-info input {
-    flex: 1;
+  flex: 1;
 }
 
 .order-confirmation {
-    text-align: center;
-    padding: 30px 0;
+  text-align: center;
+  padding: 30px 0;
 }
 
 .order-confirmation i {
-    font-size: 60px;
-    color: #f9423a; /* Grubhub red */
-    margin-bottom: 20px;
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  animation: bounce 1s;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-20px);}
+  60% {transform: translateY(-10px);}
 }
 
 .order-confirmation h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: var(--primary-color);
 }
 
 .order-confirmation p {
-    margin-bottom: 10px;
-    font-size: 16px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--black);
 }
 
 .back-home {
-    background-color: #f9423a; /* Grubhub red */
-    color: white;
-    padding: 12px 30px;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 20px;
-    transition: background-color 0.3s;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: var(--transition);
 }
 
 .back-home:hover {
-    background-color: #e03a32; /* Darker red */
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
-.hidden {
-    display: none;
+/* ============================================= */
+/* NOTIFICATION STYLES */
+/* ============================================= */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 3000;
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
 }
 
-/* Footer */
+.notification.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ============================================= */
+/* FOOTER STYLES */
+/* ============================================= */
 footer {
-    background-color: #2b2b2b;
-    color: white;
-    padding: 50px 0 20px;
+  background-color: var(--secondary-color);
+  color: var(--white);
+  padding: 50px 0 20px;
 }
 
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .footer-section {
-    flex: 1;
-    min-width: 250px;
-    margin-bottom: 30px;
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 30px;
 }
 
 .footer-section h3 {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #ffffff;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: var(--white);
 }
 
 .footer-section p {
-    margin-bottom: 15px;
-    color: #bbb;
+  margin-bottom: 15px;
+  color: #bbb;
+  line-height: 1.6;
 }
 
 .footer-section ul {
-    list-style: none;
+  list-style: none;
 }
 
 .footer-section ul li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .footer-section ul li a {
-    color: #bbb;
-    transition: color 0.3s;
+  color: #bbb;
+  transition: var(--transition);
+  display: inline-block;
+  padding: 2px 0;
 }
 
 .footer-section ul li a:hover {
-    color: #f9423a; /* Grubhub red */
+  color: var(--primary-color);
+  transform: translateX(5px);
 }
 
 .social-icons {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .social-icons a {
-    color: white;
-    font-size: 20px;
-    transition: color 0.3s;
+  color: var(--white);
+  font-size: 1.25rem;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .social-icons a:hover {
-    color: #f9423a; /* Grubhub red */
+  color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
 }
 
 .footer-bottom {
-    text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid #444;
-    color: #bbb;
-    font-size: 14px;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+  color: #bbb;
+  font-size: 0.9rem;
 }
 
-/* Responsive Styles */
+/* ============================================= */
+/* RESPONSIVE STYLES */
+/* ============================================= */
+@media (max-width: 992px) {
+  .navbar-container {
+    flex-wrap: wrap;
+  }
+  
+  .search-bar {
+    order: 3;
+    width: 100%;
+    margin: 15px 0 0;
+  }
+}
+
 @media (max-width: 768px) {
-    .navbar-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .search-bar {
-        width: 100%;
-        margin: 15px 0;
-    }
-    
-    .hero h1 {
-        font-size: 36px;
-    }
-    
-    .hero p {
-        font-size: 18px;
-    }
-    
-    .category-list {
-        justify-content: center;
-    }
-    
-    .category-item {
-        width: 150px;
-    }
-    
-    .cart-sidebar {
-        width: 100%;
-        right: -100%;
-    }
-    
-    .cart-sidebar.active {
-        right: 0;
-    }
+  .hero {
+    height: 350px;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+  }
+  
+  .category-list {
+    justify-content: center;
+  }
+  
+  .category-item {
+    width: 160px;
+  }
+  
+  .cart-sidebar {
+    width: 100%;
+    max-width: 100%;
+    right: -100%;
+  }
+  
+  .checkout-content {
+    padding: 20px;
+  }
 }
 
-@media (max-width: 480px) {
-    .modal-content {
-        margin: 10% auto;
-        width: 90%;
-        padding: 20px;
-    }
-    
-    .hero {
-        height: 300px;
-    }
-    
-    .hero h1 {
-        font-size: 28px;
-    }
-    
-    .hero p {
-        font-size: 16px;
-    }
-    
-    .category-item {
-        width: 120px;
-    }
-    
-    .restaurant-list {
-        grid-template-columns: 1fr;
-    }
-    
-    .payment-methods {
-        flex-direction: column;
-    }
+@media (max-width: 576px) {
+  .hero {
+    height: 300px;
+  }
+  
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+  
+  .category-item {
+    width: 140px;
+  }
+  
+  .restaurant-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-methods {
+    flex-direction: column;
+  }
+  
+  .footer-section {
+    min-width: 100%;
+    text-align: center;
+  }
+  
+  .social-icons {
+    justify-content: center;
+  }
+}
+
+/* ============================================= */
+/* ANIMATIONS */
+/* ============================================= */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* ============================================= */
+/* CUSTOM SCROLLBAR */
+/* ============================================= */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
