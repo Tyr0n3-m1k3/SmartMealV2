@@ -46,7 +46,7 @@ async function initDashboard() {
     try {
         // Check authentication
         if (!authToken) {
-            window.location.href = '/admin/login.html';
+            window.location.href = '/admin';
             return;
         }
 
