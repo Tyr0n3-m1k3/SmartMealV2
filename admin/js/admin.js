@@ -1,3 +1,4 @@
+
 // DOM Elements
 const sidebarMenuItems = document.querySelectorAll('.sidebar-menu li');
 const sections = document.querySelectorAll('.section');
@@ -44,9 +45,10 @@ let authToken = localStorage.getItem('smartmeal_admin_token');
 // Initialize the dashboard
 async function initDashboard() {
     try {
-        // Check authentication
+        // Check authentication - simplified for direct dashboard access
         if (!authToken) {
-            window.location.href = '/admin';
+            // Try to authenticate automatically or show login form directly
+            await attemptAutoLogin();
             return;
         }
 
@@ -54,7 +56,7 @@ async function initDashboard() {
         const isValid = await verifyToken(authToken);
         if (!isValid) {
             localStorage.removeItem('smartmeal_admin_token');
-            window.location.href = '/admin/login.html';
+            await attemptAutoLogin();
             return;
         }
 
@@ -76,11 +78,55 @@ async function initDashboard() {
 
     } catch (error) {
         console.error('Initialization error:', error);
-        alert('Failed to initialize dashboard. Please try again.');
-        if (error.message.includes('Authentication')) {
-            localStorage.removeItem('smartmeal_admin_token');
-            window.location.href = '/admin/login.html';
+        showErrorAlert('Failed to initialize dashboard. Please refresh the page.');
+    }
+}
+
+// Simplified auto-login attempt
+async function attemptAutoLogin() {
+    try {
+        // You could implement automatic login via cookies or other methods here
+        // For now, we'll just show the dashboard with limited functionality
+        console.warn('No valid token found - proceeding with limited access');
+        
+        // Load basic dashboard data without authentication
+        await loadPublicData();
+        setupEventListeners();
+        activateDefaultSection();
+    } catch (error) {
+        console.error('Auto-login failed:', error);
+        showErrorAlert('Please contact administrator for access');
+    }
+}
+
+// Load public data (non-sensitive information)
+async function loadPublicData() {
+    try {
+        // Load basic stats that don't require authentication
+        const response = await fetch(`${API_BASE_URL}/admin/public-stats`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch public data');
         }
+        
+        const stats = await response.json();
+        
+        // Update stats cards with public data
+        if (document.getElementById('total-restaurants')) {
+            document.getElementById('total-restaurants').textContent = stats.totalRestaurants || 0;
+        }
+        
+        // Create charts with sample data
+        if (revenueChartCtx) {
+            createRevenueChart(0); // Show empty chart
+        }
+        if (ordersChartCtx) {
+            createOrdersChart(0, 0); // Show empty chart
+        }
+        
+    } catch (error) {
+        console.error('Error loading public data:', error);
+        // Continue with empty dashboard
     }
 }
 
@@ -530,4 +576,24 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDashboard);
 } else {
     initDashboard();
+}
+
+// Helper function to show error messages
+function showErrorAlert(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'global-alert';
+    alertDiv.innerHTML = `
+        <div class="alert-content">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
 }
