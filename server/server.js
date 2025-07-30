@@ -14,16 +14,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // =============================================
-// STATIC FILE SERVING (SIMPLIFIED)
+// STATIC FILE SERVING
 // =============================================
-const adminDir = path.join(__dirname, '../admin'); // Points to /SmartMealV2/admin
+// Serve everything in /public folder
+const publicDir = path.join(__dirname, 'public');
+app.use(express.static(publicDir));
 
-// Serve all admin files (including login.html if it exists)
-app.use('/admin', express.static(adminDir));
-
-// Default admin route - serves index.html
+// Optional: fallback route for /admin to serve admin index
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(adminDir, 'index.html'));
+  res.sendFile(path.join(publicDir, 'admin', 'index.html'));
 });
 
 // =============================================
@@ -33,13 +32,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartmeal
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+.then(() => console.log('✅ MongoDB connected'))
+.catch(err => console.error('❌ MongoDB connection error:', err));
 
 // =============================================
 // ROUTES
 // =============================================
-// Import routes from /server/routes
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurants');
 const orderRoutes = require('./routes/orders');
