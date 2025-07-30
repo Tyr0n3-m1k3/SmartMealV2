@@ -46,7 +46,7 @@ async function initDashboard() {
     try {
         // Check authentication
         if (!authToken) {
-            window.location.href = '/admin/';
+            window.location.href = '/admin/index.html';
             return;
         }
 
@@ -54,7 +54,7 @@ async function initDashboard() {
         const isValid = await verifyToken(authToken);
         if (!isValid) {
             localStorage.removeItem('smartmeal_admin_token');
-            window.location.href = '/admin/';
+            window.location.href = '/admin/index.html';
             return;
         }
 
@@ -79,7 +79,7 @@ async function initDashboard() {
         alert('Failed to initialize dashboard. Please try again.');
         if (error.message.includes('Authentication')) {
             localStorage.removeItem('smartmeal_admin_token');
-            window.location.href = '/admin/';
+            window.location.href = '/admin/index.html';
         }
     }
 }
